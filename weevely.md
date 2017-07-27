@@ -63,6 +63,7 @@
 |数据包|分析|
 |----|----|
 |GET /backdoor.php HTTP/1.1<br>Accept-Encoding: identity<br><font color=red>Accept-Language: ur-PK,mh;q=0.4</font><br>Connection: close<br>Accept: text/html,application/xml;0.9,*/*<br>User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4<br>Host: 192.168.182.137<br>Cookie: PHPSESSID=fkdt4fv5tkn3q2hnhp10rv65o5<br><font color=red>Referer: http://translate.googleusercontent.com/translate_c?depth=1&rurl=translate.google.com&sl=auto&tl=en&usg=hiNRM7PjQ220tyDdwupmXEp1ZrLJkF0aFf</font><br>|HTTP攻击载荷主要存储于<font color=red>Referer</font>头中,通过<font color=red>Accept-Language</font>头中存储的sessionid和payload的数组偏移量对加密的payload进行提取。|
+
 &emsp;&emsp;&emsp;通过对Weevely源码进行分析，确定数据包格式主要通过7种不同的构造Referer数据报头方法进行对加密的payload进行填充。Referer头格式为：<br>
 
 * **http://www.google.${ tpl.rand_google_domain() }/url?sa=t&rct=j&q=${ tpl.target_name() }&source=web&cd=${ tpl.rand_number(3) }&ved=${ tpl.payload_chunk(9) }&url=${ tpl.target_name() }&ei=${ tpl.payload_chunk(22) }&usg=${ tpl.payload_chunk(34) }**
@@ -81,8 +82,10 @@
 |数据包|分析|
 |----|----|
 |HTTP/1.1 200 OK<br>Date: Mon, 19 Sep 2016 07:13:56 GMT<br>Server: Apache/2.4.23 (Debian)<br>Expires: Thu, 19 Nov 1981 08:52:00 GMT<br>Cache-Control: no-store, no-cache, must-revalidate<br>Pragma: no-cache<br>Content-Length: 45<br>Connection: close<br>Content-Type: text/html; charset=UTF-8<br><br><font color=red><5d41402a>TfgfHhvnfygZLdAzNCHtYgI=</5d41402a></font>|攻击载荷返回结果存储于响应体中，响应体具体返回结果通过"<5d41402a></5d41402a>"标签封装。|
+
 &emsp;&emsp;&emsp;<5d41402a></5d41402a>标签中"5d41402a"是php后门文件的连接密码"hello"通过代码：<code>**shared_key = hashlib.md5(password).hexdigest().lower()[:8]**</code>执行得出。即shared_key为连接密码进行MD5加密取其前八位。标签内的内容为攻击载荷具体返回值:"TfgfHhvnfygZLdAzNCHtYgI="具体内容经过解密（先base64解码，再和shared_key进行异或，最后通过zip解压缩）<code>zlib.decompress(utils.strings.sxor(base64.urlsafe_b64dncode(payload), shared_key))</code>得到返回值："www-data"。
 真实的payload被经过多重编码后分散在报文的各个部分，我们需要对weevely的源码进行解析，然后对加密后的payload进行解密提取有用的价值。
+
 ### 4.2&emsp;legacycookie_php.tpl模板 ###
 &emsp;&emsp;&emsp;通过用Wireshark进行数据包的捕获。
 #### 4.2.1&emsp;请求包 ####
