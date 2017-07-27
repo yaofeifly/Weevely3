@@ -92,11 +92,13 @@
 |数据包|分析|
 |------|---|
 |GET /test.php HTTP/1.1<br>Accept-Encoding: identity<br>Host: 192.168.182.137<br><font color=red>Cookie: USR=he; APISID=-Y2\*hka?XI/oJy9-2YXIv; USRID=d3@d3L2h0b-W-wn-K&TtA; SESS=c-3\*lzdGV-tK-C-d3aG9hbWkgMj4mM#Sc\*pO-w==</font><br>Connection: close<br>User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; fr-FR)AppleWebKit/528.16 (KHTML, like Gecko) Version/4.0 Safari/528.16<br>|攻击载荷主要存在于Cookie头中，Cookie中的payload主要通过base64编码加密，加密后的payload通过进行拆分，同时通过<code>#&*-/?@~</code>这些特殊字符串进行混淆。|
+
 &emsp;&emsp;&emsp;通过对Weevely源码进行分析，可以看到对cookie中的payload进行拆分的数组主要由<code>default_prefixes = ["ID", "SID", "APISID","USRID", "SESSID", "SESS","SSID", "USR", "PREF"]</code>这几个数组组成。payload通过代码：<code>payload = base64.b64encode(original_payload.strip())</code>对payload进行base64编码加密。Cookie中第一个字符串："USR=he;"其中"he"为连接密码前两位。
 #### 4.2.2&emsp;响应包 ####
 |数据包|分析|
 |------|---|
 |HTTP/1.1 200 OK<br>Date: Tue, 20 Sep 2016 01:39:18 GMT<br>Server: Apache/2.4.23 (Debian)<br>Content-Length: 20<br>Connection: close<br>Content-Type: text/html; charset=UTF-8<br><br><font color=red>\<llo>www-data\</llo></font>|攻击载荷返回结果存储于响应体中，响应体具体返回结果通过"\<llo>\</llo>"标签封装。|
+
 &emsp;&emsp;&emsp;响应包标签"\<llo>\</llo>"中"llo"通过对php代码进行分析可知:<code>$k="${password[2:]}";</code>为连接密码第三位至末尾字符串。攻击载荷返回结果即为\<llo>\</llo>标签中的返回值。
 ## 5.&emsp;数据包载荷分析 ##
 ### 5.1&emsp;weevely数据包(stegaref_php.tpl模块)分析 ###
