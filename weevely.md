@@ -128,7 +128,7 @@ weevely在建立连接的时候会从服务器上获取web根目录的绝对路�
 
 ### 5.2&emsp;weevely数据包(legacycookie模块)分析 ###
 #### 5.2.1&emsp;legacycookie_php.tpl模板数据包解密payload ####
-1. legacycookie_php.tpl模板如图3.1所示：<br>![Alt text](\picture\cookie_php.png)<br><center>图 3.1 </center><br>通过模板的php代码可以知道，用这个模板进行攻击的payload主要的加密方式为base64编码加密，所以payload只需要进行base64解码即可。
+1. legacycookie_php.tpl模板如图3.1所示：<br>![Alt text](/picture/cookie_php.png)<br><center>图 3.1 </center><br>通过模板的php代码可以知道，用这个模板进行攻击的payload主要的加密方式为base64编码加密，所以payload只需要进行base64解码即可。
 2. payload片段分别放在Cookie字段中存储，通过代码<code> **self.default_prefixes = ["ID", "SID", "APISID","USRID", "SESSID", "SESS","SSID", "USR", "PREF"]**</code>可知，Cookie中的USR，APISID等字符串主要从该数组中随机取出。
 3. <code> **additional_headers.append(('Cookie', '%s=%s;%s %s' % (prefixes.pop(),self.password[:2],additional_cookie if additional_cookie else '',cookie_payload_string)))**</code>代码中可以看到构造的Cookie第一个字符串是"self.password[:2]"即密码的前两位，后面的即为真正的payload，所以我们可以直接把payload进行拼接，然后手工去掉特殊字符，再进行base64解密就可以得到完整的payload。从数据包中提取的payload为"Y2hkaXIoJy92YXIvd3d3L2h0bWwnKTtAc3lzdGVtKCd3aG9hbWkgMj4mMScpOw=="进行base64解码后得到真正的payload为"chdir('/var/www/html');@system('whoami 2>&1');"
 
