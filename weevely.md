@@ -9,7 +9,7 @@
 ## 修订历史记录 ##
 |日期|版本|说明|作者|
 |---|---|---|----|
-|2016/09/19|\<1.0\>|Weevely webshell协议分析文档|姚飞|
+|2016/09/19|\<1.0\>|Weevely webshell协议分析文档|Yaof|
 ## 目录 ##
 1.&emsp;&emsp;简介<br>&emsp;&emsp;1.1&emsp;&emsp;目的<br>&emsp;&emsp;1.2&emsp;&emsp;范围<br>&emsp;&emsp;1.3&emsp;&emsp;定义、首字母缩写词和缩略语<br>&emsp;&emsp;1.4&emsp;&emsp;参考资料<br>&emsp;&emsp;1.5&emsp;&emsp;概述<br>&emsp;&emsp;1.6&emsp;&emsp;解码方法<br>
 2.&emsp;&emsp;协议简介<br>&emsp;&emsp;2.1&emsp;&emsp;协议分析范围<br>&emsp;&emsp;2.2&emsp;&emsp;定义（术语、名词解释）<br>
